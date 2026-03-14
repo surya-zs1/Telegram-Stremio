@@ -10,7 +10,7 @@ class Telegram:
     HELPER_BOT_TOKEN = getenv("HELPER_BOT_TOKEN", "")
 
     BASE_URL = getenv("BASE_URL", "").rstrip('/')
-    PORT = int(getenv("PORT", "8080"))
+    PORT = int(getenv("PORT", "8000"))
 
     PARALLEL = int(getenv("PARALLEL", "1"))
     PRE_FETCH = int(getenv("PRE_FETCH", "1"))

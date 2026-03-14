@@ -3,7 +3,7 @@ services:
     build: .
     container_name: tg_stremio  
     ports:
-      - "8080:8080"
+      - "8000:8000"
     volumes:
       - ./config.env:/app/config.env
     restart: unless-stopped
