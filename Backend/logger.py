@@ -1,31 +1,28 @@
 import pytz
-from logging import getLogger, FileHandler, StreamHandler, INFO, ERROR, Formatter, basicConfig
+import logging
+from logging import getLogger, NullHandler, CRITICAL
 from datetime import datetime
 
+# 1. Preserve IST timezone export so other files in your repo don't break
 IST = pytz.timezone("Asia/Kolkata")
 
-class ISTFormatter(Formatter):
-    def formatTime(self, record, datefmt=None):
-        dt = datetime.fromtimestamp(record.created, IST)
-        return dt.strftime(datefmt or "%d-%b-%y %I:%M:%S %p")
+# 2. Globally disable all log 
+logging.disable(logging.CRITICAL)
 
-file_handler = FileHandler("log.txt")
-stream_handler = StreamHandler()
-formatter = ISTFormatter("[%(asctime)s] [%(levelname)s] - %(message)s", "%d-%b-%y %I:%M:%S %p")
-file_handler.setFormatter(formatter)
-stream_handler.setFormatter(formatter)
-
-basicConfig(
-    handlers=[file_handler, stream_handler],
-    level=INFO
+# 3. Use NullHandler so nothing writes to the console or files
+logging.basicConfig(
+    handlers=[NullHandler()],
+    level=CRITICAL
 )
 
-getLogger("httpx").setLevel(ERROR)
-getLogger("pyrogram").setLevel(ERROR)
-getLogger("fastapi").setLevel(ERROR)
+# 4. Explicitly silence third-party library loggers
+getLogger("httpx").setLevel(CRITICAL)
+getLogger("pyrogram").setLevel(CRITICAL)
+getLogger("fastapi").setLevel(CRITICAL)
+getLogger("uvicorn").setLevel(CRITICAL)
+getLogger("uvicorn.access").setLevel(CRITICAL)
+getLogger("uvicorn.error").setLevel(CRITICAL)
 
-
+# 5. Export the muted LOGGER object expected by the rest of your app
 LOGGER = getLogger(__name__)
-LOGGER.setLevel(INFO)
-
-LOGGER.info("Logger initialized with IST timezone.")
+LOGGER.setLevel(CRITICAL)
